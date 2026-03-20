@@ -20,7 +20,9 @@ import {
   Copy,
   Search,
   Calendar,
-  ArrowUp
+  ArrowUp,
+  Bell,
+  Download
 } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -131,17 +133,17 @@ function MetricCard({ title, value, unit, trendType, trendValue, isPositive, isA
 function FilterSelect({ placeholder, icon, className, isTag }: { placeholder: string, icon?: React.ReactNode, className?: string, isTag?: boolean }) {
   if (isTag) {
     return (
-      <div className="flex items-center gap-2 bg-slate-100/80 text-slate-600 px-3 py-1.5 rounded-md text-[13px] border border-slate-200">
-        <span>{placeholder}</span>
-        <X size={14} className="text-slate-400 cursor-pointer hover:text-slate-600" />
+      <div className="flex items-center justify-between bg-indigo-50 text-[#5C5CFF] px-3 py-1.5 rounded-lg text-[13px] border border-indigo-100 w-full transition-colors hover:bg-indigo-100/50">
+        <span className="truncate mr-2 font-medium">{placeholder}</span>
+        <X size={14} className="cursor-pointer hover:text-indigo-700 shrink-0" />
       </div>
     )
   }
   return (
-    <div className={cn("relative flex-1 min-w-[100px] max-w-[160px]", className)}>
+    <div className={cn("relative w-full", className)}>
       <select 
         defaultValue=""
-        className="w-full appearance-none bg-white border border-slate-200 text-slate-500 py-1.5 pl-3 pr-8 rounded-md text-[13px] outline-none focus:ring-1 focus:ring-[#5C5CFF] focus:border-[#5C5CFF] cursor-pointer hover:border-slate-300 transition-colors"
+        className="w-full appearance-none bg-slate-50 border border-slate-200/60 text-slate-600 py-1.5 pl-3 pr-8 rounded-lg text-[13px] outline-none focus:bg-white focus:ring-2 focus:ring-indigo-100 focus:border-[#5C5CFF] cursor-pointer hover:bg-slate-100/50 hover:border-slate-300 transition-all"
       >
         <option value="" disabled hidden>{placeholder}</option>
         <option value="1">选项 1</option>
@@ -260,7 +262,9 @@ function DashboardSection({
           <div className="flex justify-between items-center mb-4">
             <div className="flex items-center gap-2">
               <h3 className="text-[14px] font-medium text-slate-800">趋势分析</h3>
-              <button className="bg-[#2563EB] text-white px-2 py-0.5 rounded text-[11px] hover:bg-blue-700 transition-colors">下载</button>
+              <button className="text-slate-400 hover:text-[#5C5CFF] transition-colors p-1 hover:bg-indigo-50 rounded" title="下载">
+                <Download size={15} />
+              </button>
             </div>
             <div className="flex items-center gap-2">
               <span className="text-[12px] text-slate-500">维度下钻:</span>
@@ -344,6 +348,8 @@ function DashboardSection({
 }
 
 export default function App() {
+  const [isRiskExpanded, setIsRiskExpanded] = useState(true);
+
   return (
     <div className="min-h-screen bg-[#F4F5F7] p-4 md:p-6 font-sans relative flex justify-center">
       <style>{`
@@ -365,8 +371,8 @@ export default function App() {
       <div className="max-w-[1400px] w-full flex flex-col gap-5 relative z-10">
         
         {/* Top Filters (Full Width) */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-3 flex flex-col gap-3 shrink-0">
-            <div className="flex gap-2 flex-wrap">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4 flex flex-col gap-4 shrink-0">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
               <FilterSelect placeholder="FU-技术..." isTag={true} />
               <FilterSelect placeholder="部门" />
               <FilterSelect placeholder="小组" />
@@ -374,16 +380,18 @@ export default function App() {
               <FilterSelect placeholder="职能" />
               <FilterSelect placeholder="子职能组" />
             </div>
-            <div className="flex gap-2 items-center flex-wrap">
-              <FilterSelect placeholder="辖区" />
-              <FilterSelect placeholder="国家" />
-              <FilterSelect placeholder="职级" />
-              <FilterSelect placeholder="2026" icon={<Calendar size={13} />} />
-              <div className="flex gap-2 ml-auto">
-                <button className="bg-[#5C5CFF] text-white px-5 py-1.5 rounded-md flex items-center justify-center gap-1 text-[12px] font-medium hover:bg-indigo-600 transition-colors shadow-sm">
-                  <Search size={13} /> 查询
+            <div className="flex flex-col lg:flex-row gap-3 items-start lg:items-center justify-between">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 w-full lg:w-[66%]">
+                <FilterSelect placeholder="辖区" />
+                <FilterSelect placeholder="国家" />
+                <FilterSelect placeholder="职级" />
+                <FilterSelect placeholder="2026" icon={<Calendar size={13} />} />
+              </div>
+              <div className="flex gap-2 w-full lg:w-auto justify-end">
+                <button className="bg-[#5C5CFF] text-white px-6 py-1.5 rounded-lg flex items-center justify-center gap-1.5 text-[13px] font-medium hover:bg-indigo-600 transition-all shadow-sm hover:shadow active:scale-95">
+                  <Search size={14} /> 查询
                 </button>
-                <button className="bg-white border border-slate-200 text-slate-600 px-5 py-1.5 rounded-md flex items-center justify-center gap-1 text-[12px] font-medium hover:bg-slate-50 transition-colors shadow-sm">
+                <button className="bg-white border border-slate-200 text-slate-600 px-6 py-1.5 rounded-lg flex items-center justify-center gap-1.5 text-[13px] font-medium hover:bg-slate-50 hover:text-slate-900 transition-all shadow-sm hover:shadow active:scale-95">
                   重置
                 </button>
               </div>
@@ -391,7 +399,7 @@ export default function App() {
           </div>
 
           {/* Two Columns Layout */}
-          <div className="flex gap-5 items-start">
+          <div className="flex gap-5 items-start w-full">
             
             {/* Left Main Content (Scrolling) */}
             <div className="flex-1 flex flex-col gap-6 min-w-0">
@@ -473,40 +481,65 @@ export default function App() {
         </div>
 
         {/* Right Risk Warning Panel (Sticky) */}
-        <div className="w-56 bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col sticky top-6 shrink-0 h-[calc(100vh-48px)]">
-          <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50 rounded-t-xl">
-            <h2 className="font-semibold text-slate-800 text-[14px]">风险预警</h2>
-            <span className="bg-[#F97316] text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">3</span>
-          </div>
-          <div className="p-4 flex flex-col gap-4 overflow-y-auto custom-scrollbar">
-            {/* Card 1 */}
-            <div className="border border-slate-100 rounded-lg p-3 shadow-sm bg-white">
-              <h3 className="text-[12px] font-medium text-slate-800 mb-2">绩优离职率：阈值预警</h3>
-              <div className="flex items-center gap-1 text-[#F97316] mb-2">
-                <ArrowUp size={16} strokeWidth={2.5} />
-                <span className="text-xl font-bold">0.3%</span>
+        <div className={cn(
+          "bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col sticky top-6 shrink-0 h-[calc(100vh-140px)] transition-all duration-300 relative",
+          isRiskExpanded ? "w-56" : "w-12"
+        )}>
+          {/* Toggle Button */}
+          <button 
+            onClick={() => setIsRiskExpanded(!isRiskExpanded)}
+            className="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-10 bg-white border border-slate-200 border-r-0 rounded-l-md flex items-center justify-center shadow-sm text-slate-400 hover:text-slate-600 z-10 cursor-pointer"
+          >
+            {isRiskExpanded ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
+          </button>
+
+          {isRiskExpanded ? (
+            <>
+              <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50 rounded-t-xl shrink-0">
+                <h2 className="font-semibold text-slate-800 text-[14px]">风险预警</h2>
+                <span className="bg-[#F97316] text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">3</span>
               </div>
-              <p className="text-[11px] text-slate-500 leading-relaxed">当前值=0.3%, 阈值=1.2%<br/>(month*0.4)</p>
-            </div>
-            {/* Card 2 */}
-            <div className="border border-slate-100 rounded-lg p-3 shadow-sm bg-white">
-              <h3 className="text-[12px] font-medium text-slate-800 mb-2">平均年龄：增长率预警</h3>
-              <div className="flex items-center gap-1 text-[#F97316] mb-2">
-                <ArrowUp size={16} strokeWidth={2.5} />
-                <span className="text-xl font-bold">3.0%</span>
+              <div className="p-4 flex flex-col gap-4 overflow-y-auto custom-scrollbar">
+                {/* Card 1 */}
+                <div className="border border-slate-100 rounded-lg p-3 shadow-sm bg-white">
+                  <h3 className="text-[12px] font-medium text-slate-800 mb-2">绩优离职率：阈值预警</h3>
+                  <div className="flex items-center gap-1 text-[#F97316] mb-2">
+                    <ArrowUp size={16} strokeWidth={2.5} />
+                    <span className="text-xl font-bold">0.3%</span>
+                  </div>
+                  <p className="text-[11px] text-slate-500 leading-relaxed">当前值=0.3%, 阈值=1.2%<br/>(month*0.4)</p>
+                </div>
+                {/* Card 2 */}
+                <div className="border border-slate-100 rounded-lg p-3 shadow-sm bg-white">
+                  <h3 className="text-[12px] font-medium text-slate-800 mb-2">平均年龄：增长率预警</h3>
+                  <div className="flex items-center gap-1 text-[#F97316] mb-2">
+                    <ArrowUp size={16} strokeWidth={2.5} />
+                    <span className="text-xl font-bold">3.0%</span>
+                  </div>
+                  <p className="text-[11px] text-slate-500">增长率=3.0%, 阈值&gt;2.5%</p>
+                </div>
+                {/* Card 3 */}
+                <div className="border border-slate-100 rounded-lg p-3 shadow-sm bg-white">
+                  <h3 className="text-[12px] font-medium text-slate-800 mb-2">平均司龄：增长率预警</h3>
+                  <div className="flex items-center gap-1 text-[#F97316] mb-2">
+                    <ArrowUp size={16} strokeWidth={2.5} />
+                    <span className="text-xl font-bold">6.9%</span>
+                  </div>
+                  <p className="text-[11px] text-slate-500">增长率=6.9%, 阈值&gt;2.5%</p>
+                </div>
               </div>
-              <p className="text-[11px] text-slate-500">增长率=3.0%, 阈值&gt;2.5%</p>
-            </div>
-            {/* Card 3 */}
-            <div className="border border-slate-100 rounded-lg p-3 shadow-sm bg-white">
-              <h3 className="text-[12px] font-medium text-slate-800 mb-2">平均司龄：增长率预警</h3>
-              <div className="flex items-center gap-1 text-[#F97316] mb-2">
-                <ArrowUp size={16} strokeWidth={2.5} />
-                <span className="text-xl font-bold">6.9%</span>
+            </>
+          ) : (
+            <div className="flex flex-col items-center py-4 h-full cursor-pointer hover:bg-slate-50 rounded-xl transition-colors" onClick={() => setIsRiskExpanded(true)}>
+              <div className="relative mb-4">
+                <Bell size={18} className="text-slate-400" />
+                <span className="absolute -top-1.5 -right-1.5 bg-[#F97316] text-white text-[9px] font-bold w-3.5 h-3.5 flex items-center justify-center rounded-full">3</span>
               </div>
-              <p className="text-[11px] text-slate-500">增长率=6.9%, 阈值&gt;2.5%</p>
+              <div className="text-slate-500 text-[13px] font-medium tracking-widest" style={{ writingMode: 'vertical-rl' }}>
+                风险预警
+              </div>
             </div>
-          </div>
+          )}
         </div>
         
       </div>
