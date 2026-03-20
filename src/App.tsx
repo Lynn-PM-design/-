@@ -482,7 +482,7 @@ export default function App() {
 
         {/* Right Risk Warning Panel (Sticky) */}
         <div className={cn(
-          "bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col sticky top-6 shrink-0 h-[calc(100vh-140px)] transition-all duration-300 relative",
+          "bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col sticky top-6 shrink-0 h-[calc(100vh-48px)] transition-all duration-300",
           isRiskExpanded ? "w-56" : "w-12"
         )}>
           {/* Toggle Button */}
